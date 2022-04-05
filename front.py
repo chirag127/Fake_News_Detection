@@ -45,13 +45,12 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        message = request.form['news']
-        pred = fake_news_det(message)
-        print(pred)
-        return render_template('index.html', prediction=pred)
-    else:
+    if request.method != 'POST':
         return render_template('index.html', prediction="Something went wrong")
+    message = request.form['news']
+    pred = fake_news_det(message)
+    print(pred)
+    return render_template('index.html', prediction=pred)
 
 
 
