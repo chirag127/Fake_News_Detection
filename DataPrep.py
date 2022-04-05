@@ -83,10 +83,7 @@ def data_qualityCheck():
 
 #Stemming
 def stem_tokens(tokens, stemmer):
-    stemmed = []
-    for token in tokens:
-        stemmed.append(stemmer.stem(token))
-    return stemmed
+    return [stemmer.stem(token) for token in tokens]
 
 #process the data
 def process_data(data,exclude_stopword=True,stem=True):
@@ -106,15 +103,18 @@ def create_unigram(words):
 #bigram
 def create_bigrams(words):
     assert type(words) == list
-    skip = 0
-    join_str = " "
     Len = len(words)
     if Len > 1:
         lst = []
+        skip = 0
+        join_str = " "
         for i in range(Len-1):
-            for k in range(1,skip+2):
-                if i+k < Len:
-                    lst.append(join_str.join([words[i],words[i+k]]))
+            lst.extend(
+                join_str.join([words[i], words[i + k]])
+                for k in range(1, skip + 2)
+                if i + k < Len
+            )
+
     else:
         #set it as unigram
         lst = create_unigram(words)
