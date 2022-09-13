@@ -90,7 +90,7 @@ np.mean(predicted_rf == DataPrep.test_news['Label'])
 
 #User defined functon for K-Fold cross validatoin
 def build_confusion_matrix(classifier):
-    
+
     k_fold = KFold(n_splits=5)
     scores = []
     confusion = np.array([[0,0],[0,0]])
@@ -98,17 +98,17 @@ def build_confusion_matrix(classifier):
     for train_ind, test_ind in k_fold.split(DataPrep.train_news):
         train_text = DataPrep.train_news.iloc[train_ind]['Statement'] 
         train_y = DataPrep.train_news.iloc[train_ind]['Label']
-    
+
         test_text = DataPrep.train_news.iloc[test_ind]['Statement']
         test_y = DataPrep.train_news.iloc[test_ind]['Label']
-        
+
         classifier.fit(train_text,train_y)
         predictions = classifier.predict(test_text)
-        
+
         confusion += confusion_matrix(test_y,predictions)
         score = f1_score(test_y,predictions)
         scores.append(score)
-    
+
     return (print('Total statements classified:', len(DataPrep.train_news)),
     print('Score:', sum(scores)/len(scores)),
     print('score length', len(scores)),
@@ -345,38 +345,38 @@ pickle.dump(logR_pipeline_ngram,open(model_file,'wb'))
 def plot_learing_curve(pipeline,title):
     size = 10000
     cv = KFold(size, shuffle=True)
-    
+
     X = DataPrep.train_news["Statement"]
     y = DataPrep.train_news["Label"]
-    
+
     pl = pipeline
     pl.fit(X,y)
-    
+
     train_sizes, train_scores, test_scores = learning_curve(pl, X, y, n_jobs=-1, cv=cv, train_sizes=np.linspace(.1, 1.0, 5), verbose=0)
-       
+
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)
     test_scores_std = np.std(test_scores, axis=1)
-     
+
     plt.figure()
     plt.title(title)
     plt.legend(loc="best")
     plt.xlabel("Training examples")
     plt.ylabel("Score")
     plt.gca().invert_yaxis()
-    
+
     # box-like grid
     plt.grid()
-    
+
     # plot the std deviation as a transparent range at each training set size
     plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std, alpha=0.1, color="r")
     plt.fill_between(train_sizes, test_scores_mean - test_scores_std, test_scores_mean + test_scores_std, alpha=0.1, color="g")
-    
+
     # plot the average training and test score lines at each training set size
     plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
     plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
-    
+
     # sizes the window for readability and displays the plot
     # shows error from 0 to 1.1
     plt.ylim(-.1,1.1)
